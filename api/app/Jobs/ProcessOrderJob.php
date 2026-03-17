@@ -4,6 +4,7 @@ namespace App\Jobs;
 use App\Models\Order;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class ProcessOrderJob implements ShouldQueue
 {
@@ -13,10 +14,26 @@ class ProcessOrderJob implements ShouldQueue
 
     public function handle(): void
     {
-        sleep(2); // simula processamento
+        Log::info('Processing order', [
+            'order_id' => $this->order->id
+        ]);
+
+        sleep(2);
 
         $this->order->update([
             'status' => 'completed'
+        ]);
+
+        Log::info('Order completed', [
+            'order_id' => $this->order->id
+        ]);
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Log::error('Order processing failed', [
+            'order_id' => $this->order->id,
+            'error' => $exception->getMessage()
         ]);
     }
 }
