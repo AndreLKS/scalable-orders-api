@@ -18,8 +18,6 @@ class ProcessOrderJob implements ShouldQueue
             'order_id' => $this->order->id
         ]);
 
-        sleep(2);
-
         $this->order->update([
             'status' => 'completed'
         ]);
@@ -34,6 +32,9 @@ class ProcessOrderJob implements ShouldQueue
         Log::error('Order processing failed', [
             'order_id' => $this->order->id,
             'error' => $exception->getMessage()
+        ]);
+        $this->order->update([
+            'status' => 'failed'
         ]);
     }
 }

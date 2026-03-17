@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
+
+    //backoff and tries to handle job retries in case of failure
+    public $tries = 3;
+    public $backoff = 10; //wait 10 seconds before retrying the job
     public function create(OrderData $data): Order
     {
         Log::info('Creating order', [
